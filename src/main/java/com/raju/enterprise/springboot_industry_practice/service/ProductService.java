@@ -2,9 +2,9 @@ package com.raju.enterprise.springboot_industry_practice.service;
 
 import com.raju.enterprise.springboot_industry_practice.helper.APIResponse;
 import com.raju.enterprise.springboot_industry_practice.helper.PagedResponse;
-import com.raju.enterprise.springboot_industry_practice.model.dto.CreateProductRequestDTO;
-import com.raju.enterprise.springboot_industry_practice.model.dto.ProductResponseDTO;
-import com.raju.enterprise.springboot_industry_practice.model.dto.UpdateProductRequestDTO;
+import com.raju.enterprise.springboot_industry_practice.model.dto.product.CreateProductRequestDTO;
+import com.raju.enterprise.springboot_industry_practice.model.dto.product.ProductResponseDTO;
+import com.raju.enterprise.springboot_industry_practice.model.dto.product.UpdateProductRequestDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface ProductService {

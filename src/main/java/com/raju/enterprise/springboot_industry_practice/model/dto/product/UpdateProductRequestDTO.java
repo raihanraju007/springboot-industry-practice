@@ -1,4 +1,4 @@
-package com.raju.enterprise.springboot_industry_practice.model.dto;
+package com.raju.enterprise.springboot_industry_practice.model.dto.product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,4 +21,7 @@ public class UpdateProductRequestDTO {
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be greater than 0")
     private Double price;
+
+    @NotNull(message = "Category id is required")
+    private Long categoryId;
 }

@@ -1,5 +1,6 @@
-package com.raju.enterprise.springboot_industry_practice.model.dto.product;
+package com.raju.enterprise.springboot_industry_practice.model.dto.category;
 
+import com.raju.enterprise.springboot_industry_practice.model.enums.CategoryStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,13 +8,11 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ProductResponseDTO {
+public class CategoryResponseDTO {
     private Long id;
     private String name;
     private String description;
-    private Double price;
-    private Long categoryId;
-    private String categoryName;
+    private CategoryStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

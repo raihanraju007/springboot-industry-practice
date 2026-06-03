@@ -1,5 +1,6 @@
 package com.raju.enterprise.springboot_industry_practice.model.entity;
 
+import com.raju.enterprise.springboot_industry_practice.model.enums.CategoryStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,27 +8,24 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "products")
+@Table(name = "categories")
 @Getter
 @Setter
-public class Product {
+public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     private String description;
 
-    @Column(nullable = false)
-    private Double price;
-
-    // Many products belong to one category. FETCH LAZY = don't load the
-    // category unless we actually touch it. The FK column lives in this table.
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    // Enum persisted as a readable String column ("ACTIVE"/"INACTIVE")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private CategoryStatus status;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -37,6 +35,9 @@ public class Product {
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = CategoryStatus.ACTIVE;   // sensible default
+        }
     }
 
     @PreUpdate

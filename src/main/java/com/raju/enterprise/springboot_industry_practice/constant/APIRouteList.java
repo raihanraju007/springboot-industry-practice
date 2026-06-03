@@ -10,4 +10,10 @@ public final class APIRouteList {
     public static final String PRODUCT_UPDATE = "/update/{id}";
     public static final String PRODUCT_DELETE = "/delete/{id}";
     public static final String PRODUCT_BY_ID = "/{id}";
+
+    public static final String CATEGORY_LIST = "/list";
+    public static final String CATEGORY_SAVE = "/save";
+    public static final String CATEGORY_UPDATE = "/update/{id}";
+    public static final String CATEGORY_DELETE = "/delete/{id}";
+    public static final String CATEGORY_BY_ID = "/{id}";
 }

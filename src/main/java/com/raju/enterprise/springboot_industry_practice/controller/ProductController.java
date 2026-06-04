@@ -2,7 +2,6 @@ package com.raju.enterprise.springboot_industry_practice.controller;
 
 import com.raju.enterprise.springboot_industry_practice.constant.APIRouteList;
 import com.raju.enterprise.springboot_industry_practice.helper.APIResponse;
-import com.raju.enterprise.springboot_industry_practice.helper.PagedResponse;
 import com.raju.enterprise.springboot_industry_practice.model.dto.product.CreateProductRequestDTO;
 import com.raju.enterprise.springboot_industry_practice.model.dto.product.ProductResponseDTO;
 import com.raju.enterprise.springboot_industry_practice.model.dto.product.UpdateProductRequestDTO;
@@ -10,6 +9,8 @@ import com.raju.enterprise.springboot_industry_practice.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -22,11 +23,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = APIRouteList.PRODUCT_LIST, method = RequestMethod.GET)
-    public ResponseEntity<APIResponse<PagedResponse<ProductResponseDTO>>> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,desc") String sort) {
-        return productService.getAll(page, size, sort);
+    public ResponseEntity<APIResponse<List<ProductResponseDTO>>> getAllProducts() {
+        return productService.getAll();
     }
 
     @RequestMapping(value = APIRouteList.PRODUCT_BY_ID, method = RequestMethod.GET)

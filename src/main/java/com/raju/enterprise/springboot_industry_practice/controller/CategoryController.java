@@ -7,11 +7,10 @@ import com.raju.enterprise.springboot_industry_practice.model.dto.category.Creat
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.UpdateCategoryRequestDTO;
 import com.raju.enterprise.springboot_industry_practice.service.CategoryService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/category")
@@ -24,9 +23,8 @@ public class CategoryController {
     }
 
     @RequestMapping(value = APIRouteList.CATEGORY_LIST, method = RequestMethod.GET)
-    public ResponseEntity<APIResponse<Page<CategoryResponseDTO>>> getAllCategories(
-            @PageableDefault(sort = "id") Pageable pageable) {
-        return categoryService.getAll(pageable);
+    public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getAllCategories() {
+        return categoryService.getAll();
     }
 
     @RequestMapping(value = APIRouteList.CATEGORY_BY_ID, method = RequestMethod.GET)

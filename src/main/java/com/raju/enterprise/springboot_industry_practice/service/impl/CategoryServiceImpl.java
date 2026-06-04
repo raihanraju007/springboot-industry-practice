@@ -10,11 +10,11 @@ import com.raju.enterprise.springboot_industry_practice.model.dto.category.Updat
 import com.raju.enterprise.springboot_industry_practice.model.entity.Category;
 import com.raju.enterprise.springboot_industry_practice.repository.CategoryRepository;
 import com.raju.enterprise.springboot_industry_practice.service.CategoryService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -47,10 +47,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<APIResponse<Page<CategoryResponseDTO>>> getAll(Pageable pageable) {
-        // Spring resolves the Pageable from ?page=&size=&sort= automatically,
-        // and Page.map keeps all the paging metadata for us.
-        Page<CategoryResponseDTO> categories = repository.findAll(pageable).map(mapper::toResponse);
+    public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getAll() {
+        List<CategoryResponseDTO> categories = repository.findAll().stream()
+                .map(mapper::toResponse)
+                .toList();
         return ResponseEntity.ok(APIResponse.success("Categories fetched successfully", categories));
     }
 

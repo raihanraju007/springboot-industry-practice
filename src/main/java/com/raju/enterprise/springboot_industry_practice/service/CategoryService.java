@@ -4,9 +4,9 @@ import com.raju.enterprise.springboot_industry_practice.helper.APIResponse;
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.CategoryResponseDTO;
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.CreateCategoryRequestDTO;
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.UpdateCategoryRequestDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface CategoryService {
 
@@ -14,7 +14,7 @@ public interface CategoryService {
 
     ResponseEntity<APIResponse<CategoryResponseDTO>> getById(Long id);
 
-    ResponseEntity<APIResponse<Page<CategoryResponseDTO>>> getAll(Pageable pageable);
+    ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getAll();
 
     ResponseEntity<APIResponse<CategoryResponseDTO>> update(Long id, UpdateCategoryRequestDTO dto);
 

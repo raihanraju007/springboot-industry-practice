@@ -30,19 +30,19 @@ public class GlobalExceptionHandler {
     /** 404 - something was requested by id/name but does not exist. */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<APIResponse<Object>> handleNotFound(ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponse.error(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponse.error(HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
     /** 409 - tried to create a resource that breaks a uniqueness rule. */
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<APIResponse<Object>> handleDuplicate(DuplicateResourceException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(APIResponse.error(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(APIResponse.error(HttpStatus.CONFLICT, ex.getMessage()));
     }
 
     /** 400 - bad client input that we validate ourselves (e.g. invalid sort field). */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<APIResponse<Object>> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.badRequest().body(APIResponse.error(ex.getMessage()));
+        return ResponseEntity.badRequest().body(APIResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
     /** 400 - bean validation (@Valid) failures, returned as field -> message. */
@@ -54,7 +54,8 @@ public class GlobalExceptionHandler {
                         error -> error.getDefaultMessage() == null ? "Invalid value" : error.getDefaultMessage(),
                         (existing, replacement) -> existing,
                         HashMap::new));
-        return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", errors));
+        return ResponseEntity.badRequest()
+                .body(new APIResponse<>(false, HttpStatus.BAD_REQUEST.value(), "Validation failed", errors));
     }
 
     /** 500 - catch-all for anything we did not anticipate. Log the real cause,
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<APIResponse<Object>> handleUnexpected(Exception ex) {
         log.error("Unhandled exception", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(APIResponse.error("Something went wrong. Please try again later."));
+                .body(APIResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong. Please try again later."));
     }
 
 }

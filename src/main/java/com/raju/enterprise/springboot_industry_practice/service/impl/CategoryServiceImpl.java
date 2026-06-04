@@ -2,7 +2,6 @@ package com.raju.enterprise.springboot_industry_practice.service.impl;
 
 import com.raju.enterprise.springboot_industry_practice.exception.DuplicateResourceException;
 import com.raju.enterprise.springboot_industry_practice.exception.ResourceNotFoundException;
-import com.raju.enterprise.springboot_industry_practice.helper.APIResponse;
 import com.raju.enterprise.springboot_industry_practice.mapper.CategoryMapper;
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.CategoryResponseDTO;
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.CreateCategoryRequestDTO;
@@ -10,8 +9,6 @@ import com.raju.enterprise.springboot_industry_practice.model.dto.category.Updat
 import com.raju.enterprise.springboot_industry_practice.model.entity.Category;
 import com.raju.enterprise.springboot_industry_practice.repository.CategoryRepository;
 import com.raju.enterprise.springboot_industry_practice.service.CategoryService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,48 +25,42 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<APIResponse<CategoryResponseDTO>> create(CreateCategoryRequestDTO dto) {
+    public CategoryResponseDTO create(CreateCategoryRequestDTO dto) {
         if (repository.existsByName(dto.getName())) {
             throw new DuplicateResourceException("Category with name '" + dto.getName() + "' already exists");
         }
         Category category = mapper.toEntity(dto);
-        CategoryResponseDTO saved = mapper.toResponse(repository.save(category));
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(APIResponse.success("Category created successfully", saved));
+        return mapper.toResponse(repository.save(category));
     }
 
     @Override
-    public ResponseEntity<APIResponse<CategoryResponseDTO>> getById(Long id) {
+    public CategoryResponseDTO getById(Long id) {
         Category category = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
-        return ResponseEntity.ok(APIResponse.success("Category fetched successfully", mapper.toResponse(category)));
+        return mapper.toResponse(category);
     }
 
     @Override
-    public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getAll() {
-        List<CategoryResponseDTO> categories = repository.findAll().stream()
+    public List<CategoryResponseDTO> getAll() {
+        return repository.findAll().stream()
                 .map(mapper::toResponse)
                 .toList();
-        return ResponseEntity.ok(APIResponse.success("Categories fetched successfully", categories));
     }
 
     @Override
-    public ResponseEntity<APIResponse<CategoryResponseDTO>> update(Long id, UpdateCategoryRequestDTO dto) {
+    public CategoryResponseDTO update(Long id, UpdateCategoryRequestDTO dto) {
         Category category = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
         mapper.updateEntity(category, dto);
-        CategoryResponseDTO updated = mapper.toResponse(repository.save(category));
-        return ResponseEntity.ok(APIResponse.success("Category updated successfully", updated));
+        return mapper.toResponse(repository.save(category));
     }
 
     @Override
-    public ResponseEntity<APIResponse<String>> delete(Long id) {
+    public void delete(Long id) {
         Category category = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
         repository.delete(category);
-        return ResponseEntity.ok(APIResponse.success("Category deleted successfully", "Deleted category id: " + id));
     }
 }

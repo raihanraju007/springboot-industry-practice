@@ -1,6 +1,6 @@
 package com.raju.enterprise.springboot_industry_practice.controller;
 
-import com.raju.enterprise.springboot_industry_practice.constant.APIRouteList;
+import com.raju.enterprise.springboot_industry_practice.constant.message.CategoryMessage;
 import com.raju.enterprise.springboot_industry_practice.helper.APIResponse;
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.CategoryResponseDTO;
 import com.raju.enterprise.springboot_industry_practice.model.dto.category.CreateCategoryRequestDTO;
@@ -22,31 +22,32 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @RequestMapping(value = APIRouteList.CATEGORY_LIST, method = RequestMethod.GET)
+    @GetMapping("/list")
     public ResponseEntity<APIResponse<List<CategoryResponseDTO>>> getAllCategories() {
-        return categoryService.getAll();
+        return APIResponse.build(CategoryMessage.LIST_FETCHED, categoryService.getAll());
     }
 
-    @RequestMapping(value = APIRouteList.CATEGORY_BY_ID, method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public ResponseEntity<APIResponse<CategoryResponseDTO>> getCategoryById(@PathVariable Long id) {
-        return categoryService.getById(id);
+        return APIResponse.build(CategoryMessage.FETCHED, categoryService.getById(id));
     }
 
-    @RequestMapping(value = APIRouteList.CATEGORY_SAVE, method = RequestMethod.POST)
+    @PostMapping("/save")
     public ResponseEntity<APIResponse<CategoryResponseDTO>> createCategory(
             @RequestBody @Valid CreateCategoryRequestDTO categoryDto) {
-        return categoryService.create(categoryDto);
+        return APIResponse.build(CategoryMessage.CREATED, categoryService.create(categoryDto));
     }
 
-    @RequestMapping(value = APIRouteList.CATEGORY_UPDATE, method = RequestMethod.PUT)
+    @PutMapping("/update/{id}")
     public ResponseEntity<APIResponse<CategoryResponseDTO>> updateCategory(
             @PathVariable Long id,
             @RequestBody @Valid UpdateCategoryRequestDTO categoryDto) {
-        return categoryService.update(id, categoryDto);
+        return APIResponse.build(CategoryMessage.UPDATED, categoryService.update(id, categoryDto));
     }
 
-    @RequestMapping(value = APIRouteList.CATEGORY_DELETE, method = RequestMethod.DELETE)
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<APIResponse<String>> deleteCategory(@PathVariable Long id) {
-        return categoryService.delete(id);
+        categoryService.delete(id);
+        return APIResponse.build(CategoryMessage.DELETED, "Deleted category id: " + id);
     }
 }

@@ -1,6 +1,6 @@
 package com.raju.enterprise.springboot_industry_practice.controller;
 
-import com.raju.enterprise.springboot_industry_practice.constant.APIRouteList;
+import com.raju.enterprise.springboot_industry_practice.constant.message.ProductMessage;
 import com.raju.enterprise.springboot_industry_practice.helper.APIResponse;
 import com.raju.enterprise.springboot_industry_practice.model.dto.product.CreateProductRequestDTO;
 import com.raju.enterprise.springboot_industry_practice.model.dto.product.ProductResponseDTO;
@@ -22,31 +22,32 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @RequestMapping(value = APIRouteList.PRODUCT_LIST, method = RequestMethod.GET)
+    @GetMapping("/list")
     public ResponseEntity<APIResponse<List<ProductResponseDTO>>> getAllProducts() {
-        return productService.getAll();
+        return APIResponse.build(ProductMessage.LIST_FETCHED, productService.getAll());
     }
 
-    @RequestMapping(value = APIRouteList.PRODUCT_BY_ID, method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public ResponseEntity<APIResponse<ProductResponseDTO>> getProductById(@PathVariable Long id) {
-        return productService.getById(id);
+        return APIResponse.build(ProductMessage.FETCHED, productService.getById(id));
     }
 
-    @RequestMapping(value = APIRouteList.PRODUCT_SAVE, method = RequestMethod.POST)
+    @PostMapping("/save")
     public ResponseEntity<APIResponse<ProductResponseDTO>> createProduct(
             @RequestBody @Valid CreateProductRequestDTO productDto) {
-        return productService.create(productDto);
+        return APIResponse.build(ProductMessage.CREATED, productService.create(productDto));
     }
 
-    @RequestMapping(value = APIRouteList.PRODUCT_UPDATE, method = RequestMethod.PUT)
+    @PutMapping("/update/{id}")
     public ResponseEntity<APIResponse<ProductResponseDTO>> updateProduct(
             @PathVariable Long id,
             @RequestBody @Valid UpdateProductRequestDTO productDto) {
-        return productService.update(id, productDto);
+        return APIResponse.build(ProductMessage.UPDATED, productService.update(id, productDto));
     }
 
-    @RequestMapping(value = APIRouteList.PRODUCT_DELETE, method = RequestMethod.DELETE)
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<APIResponse<String>> deleteProduct(@PathVariable Long id) {
-        return productService.delete(id);
+        productService.delete(id);
+        return APIResponse.build(ProductMessage.DELETED, "Deleted product id: " + id);
     }
 }

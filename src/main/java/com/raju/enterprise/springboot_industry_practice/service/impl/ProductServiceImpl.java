@@ -1,5 +1,6 @@
 package com.raju.enterprise.springboot_industry_practice.service.impl;
 
+import com.raju.enterprise.springboot_industry_practice.exception.ResourceNotFoundException;
 import com.raju.enterprise.springboot_industry_practice.helper.APIResponse;
 import com.raju.enterprise.springboot_industry_practice.helper.PagedResponse;
 import com.raju.enterprise.springboot_industry_practice.mapper.ProductMapper;
@@ -56,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ResponseEntity<APIResponse<ProductResponseDTO>> getById(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         return ResponseEntity.ok(APIResponse.success("Product fetched successfully", mapper.toResponse(product)));
     }
 
@@ -81,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         String[] parts = sort.split(",");
         String field = parts[0].trim();
         if (!ALLOWED_SORT_FIELDS.contains(field)) {
-            throw new RuntimeException("Invalid sort field: " + field
+            throw new IllegalArgumentException("Invalid sort field: " + field
                     + ". Allowed: " + ALLOWED_SORT_FIELDS);
         }
         Sort.Direction direction = (parts.length > 1 && parts[1].trim().equalsIgnoreCase("desc"))
@@ -93,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ResponseEntity<APIResponse<ProductResponseDTO>> update(Long id, UpdateProductRequestDTO dto) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         Category category = findCategoryOrThrow(dto.getCategoryId());
         mapper.updateEntity(product, dto, category);
@@ -105,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ResponseEntity<APIResponse<String>> delete(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         repository.delete(product);
         return ResponseEntity.ok(APIResponse.success("Product deleted successfully", "Deleted product id: " + id));
@@ -113,6 +114,6 @@ public class ProductServiceImpl implements ProductService {
 
     private Category findCategoryOrThrow(Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
     }
 }

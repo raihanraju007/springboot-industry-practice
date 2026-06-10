@@ -1,0 +1,5 @@
+databaseChangeLog:
+  # Master changelog. It only INCLUDES the individual change files,
+  # in order. Add new files here as the schema grows.
+  - include:
+      file: db/changelog/changes/001-create-categories-table.yaml

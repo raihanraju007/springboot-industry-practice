@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-categories-table
+      author: raju
+      # GOTCHA: the `categories` table already exists in this database
+      # (it was created earlier by Hibernate ddl-auto=update). A plain
+      # createTable would fail with "relation already exists".
+      #
+      # This precondition makes the changeset safe in BOTH situations:
+      #   - existing DB  -> table is found -> precondition fails ->
+      #                     onFail=MARK_RAN records it as already applied
+      #                     WITHOUT running createTable.
+      #   - fresh DB     -> table is missing -> precondition passes ->
+      #                     createTable runs and builds the table.
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: categories
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: categories_pkey
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_categories_name
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+        # Mirror the CHECK constraint Hibernate generates for the
+        # @Enumerated(STRING) status column, so a freshly-built table
+        # matches the existing one exactly.
+        - sql:
+            sql: >-
+              ALTER TABLE categories
+              ADD CONSTRAINT categories_status_check
+              CHECK (status IN ('ACTIVE', 'INACTIVE'))
